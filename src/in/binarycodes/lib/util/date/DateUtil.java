@@ -1,6 +1,7 @@
 package in.binarycodes.lib.util.date;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -14,10 +15,24 @@ public final class DateUtil {
 		return format.getDateFormat().format(date);
 	}
 
+	public static String utilDatetoString(Date date, String format) {
+		return new SimpleDateFormat(format).format(date);
+	}
+
 	public static Date stringToUtilDate(String stringDate, DateFormat format) {
 		Date returnDate;
 		try {
 			returnDate = format.getDateFormat().parse(stringDate);
+		} catch (ParseException pe) {
+			returnDate = null;
+		}
+		return returnDate;
+	}
+
+	public static Date stringToUtilDate(String stringDate, String format) {
+		Date returnDate;
+		try {
+			returnDate = new SimpleDateFormat(format).parse(stringDate);
 		} catch (ParseException pe) {
 			returnDate = null;
 		}

@@ -1,4 +1,4 @@
-package in.binarycodes.test.util.generic;
+package in.binarycodes.test.util.validation;
 
 import in.binarycodes.lib.util.validation.CheckUtil;
 

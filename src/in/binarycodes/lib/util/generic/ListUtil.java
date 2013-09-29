@@ -37,7 +37,7 @@ public final class ListUtil {
 
 	public static <T> String listToString(final List<T> listData,
 			final String separator) {
-		final String separatorString = StringUtil.stringHasData(separator) ? separator
+		final String separatorString = StringUtil.hasData(separator) ? separator
 				: "";
 		final StringBuffer buffer = new StringBuffer();
 		for (final T data : listData) {
@@ -87,8 +87,38 @@ public final class ListUtil {
 		return listData == null || listData.size() == 0;
 	}
 
+	@SafeVarargs
+	public static <T> boolean isListNullOrEmpty(final List<T>... listData) {
+		boolean check = false;
+		if (listData != null) {
+			check = true;
+			for (int ii = 0; check && ii < listData.length; ii++) {
+				check = check && isListNullOrEmpty(listData[ii]);
+				if (!check) {
+					break;
+				}
+			}
+		}
+		return check;
+	}
+
 	public static <T> boolean hasData(final List<T> listData) {
 		return !isListNullOrEmpty(listData);
+	}
+
+	@SafeVarargs
+	public static <T> boolean hasData(final List<T>... listData) {
+		boolean check = false;
+		if (listData != null) {
+			check = true;
+			for (int ii = 0; check && ii < listData.length; ii++) {
+				check = check && hasData(listData[ii]);
+				if (!check) {
+					break;
+				}
+			}
+		}
+		return check;
 	}
 
 }

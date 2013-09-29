@@ -32,8 +32,8 @@ public class ListUtilTest {
 
 	@Test
 	public void testListToString() {
-		Assert.assertEquals("10|20|10|0|-10|130",
-				ListUtil.listToString(listData, "|"));
+		Assert.assertEquals("10+|+20+|+10+|+0+|+-10+|+130",
+				ListUtil.listToString(listData, "+|+"));
 	}
 
 	@Test
