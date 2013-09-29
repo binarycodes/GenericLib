@@ -2,6 +2,7 @@ package in.binarycodes.lib.util.generic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +13,17 @@ public final class ListUtil {
 
 	private ListUtil() {
 		super();
+	}
+
+	public static <T> boolean inList(T checkData, Collection<T> listData) {
+		boolean found = false;
+		for (T data : listData) {
+			if (checkData.equals(data)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
 	}
 
 	public static <T1, T2> Map<T1, T2> zipListToMap(final List<T1> listKey,

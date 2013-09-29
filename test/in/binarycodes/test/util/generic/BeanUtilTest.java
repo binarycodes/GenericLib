@@ -28,12 +28,12 @@ public class BeanUtilTest {
 	@Test
 	public void testBeanPropertiesList() {
 		List<Map<String, String>> propertiesMapList = BeanUtil
-				.beanPropertiesList(Employee.class, empList);
+				.beanPropertiesList(Employee.class, empList, true);
 		for (Map<String, String> map : propertiesMapList) {
 			System.err.println(StringUtil.multiStringGenerator(80, "-"));
 			for (Map.Entry<String, String> entrySet : map.entrySet()) {
-				System.err.println(StringUtil.splitCamelCase(entrySet.getKey())
-						+ " :: " + entrySet.getValue());
+				System.err.println(entrySet.getKey() + " :: "
+						+ entrySet.getValue());
 			}
 			System.err.println(StringUtil.multiStringGenerator(80, "-"));
 		}
@@ -42,10 +42,10 @@ public class BeanUtilTest {
 	@Test
 	public void testBeanProperties() {
 		Map<String, String> propertiesMap = BeanUtil.beanProperties(
-				Employee.class, emp);
+				Employee.class, emp, false);
 		for (Map.Entry<String, String> entrySet : propertiesMap.entrySet()) {
-			System.err.println(StringUtil.splitCamelCase(entrySet.getKey())
-					+ " :: " + entrySet.getValue());
+			System.err
+					.println(entrySet.getKey() + " :: " + entrySet.getValue());
 		}
 	}
 

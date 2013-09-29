@@ -17,17 +17,18 @@ public final class BeanUtil {
 	}
 
 	public static <T> List<Map<String, String>> beanPropertiesList(
-			Class<T> clazz, List<T> beanList) {
+			Class<T> clazz, List<T> beanList, boolean humanize) {
 		List<Map<String, String>> propertiesMapList = new ArrayList<Map<String, String>>();
 		if (ListUtil.hasData(beanList)) {
 			for (T bean : beanList) {
-				propertiesMapList.add(beanProperties(clazz, bean));
+				propertiesMapList.add(beanProperties(clazz, bean, humanize));
 			}
 		}
 		return propertiesMapList;
 	}
 
-	public static <T> Map<String, String> beanProperties(Class<T> clazz, T obj) {
+	public static <T> Map<String, String> beanProperties(Class<T> clazz, T obj,
+			boolean humanize) {
 		Map<String, String> propertiesMap = new HashMap<String, String>();
 		if (obj != null && clazz != null) {
 			try {
@@ -38,7 +39,8 @@ public final class BeanUtil {
 					Method method = propertyDescriptor.getReadMethod();
 					String name = propertyDescriptor.getName();
 					Object value = method.invoke(obj, new Object[] {});
-					propertiesMap.put(name,
+					propertiesMap.put(
+							humanize ? StringUtil.splitCamelCase(name) : name,
 							value == null ? "" : value.toString());
 				}
 			} catch (IntrospectionException e) {
@@ -53,4 +55,5 @@ public final class BeanUtil {
 		}
 		return propertiesMap;
 	}
+
 }
