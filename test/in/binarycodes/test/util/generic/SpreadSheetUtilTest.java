@@ -21,7 +21,7 @@ public class SpreadSheetUtilTest {
 	@Before
 	public void setUp() throws Exception {
 		employeeList = new ArrayList<Employee>();
-		for (int i = 1; i <= 200; i++) {
+		for (int i = 1; i <= 20; i++) {
 			Employee emp = new Employee(i, "Sujoy K" + i);
 			employeeList.add(emp);
 		}
@@ -29,14 +29,24 @@ public class SpreadSheetUtilTest {
 
 	@Test
 	public void testDoWork() {
-		Map<Integer, String> allowList = new HashMap<Integer, String>() {
+		Map<Integer, String> headerMap = new HashMap<Integer, String>() {
 			private static final long serialVersionUID = -4643843988955990728L;
 			{
-				put(0, "employeeId");
+				put(0, "Employee Id");
+				put(1, "Check Description");
+				put(2, "Check");
+			}
+		};
+		Map<Integer, String> allowMap = new HashMap<Integer, String>() {
+			private static final long serialVersionUID = -4643843988955990728L;
+			{
+				put(0, "employee.employeeId");
+				put(1, "employee.check.description");
+				put(2, "employee.check");
 			}
 		};
 		workbook = SpreadSheetUtil.prepareWorkbook("SAMPLE", employeeList,
-				Employee.class, true, allowList);
+				Employee.class, false, headerMap, allowMap);
 		try {
 			FileOutputStream out = SpreadSheetUtil.writeWorkBook(
 					"/home/sujoy/randomtrash/ABC.xls", workbook);

@@ -3,6 +3,7 @@ package in.binarycodes.test.util.generic;
 public class Employee {
 	private Integer employeeId;
 	private String employeeName;
+	private Check check;
 
 	public Employee() {
 		super();
@@ -12,6 +13,9 @@ public class Employee {
 		super();
 		this.employeeId = employeeId;
 		this.employeeName = employeeName;
+		check = new Check(this.employeeId + 100,
+				this.employeeName.toUpperCase());
+
 	}
 
 	public Integer getEmployeeId() {
@@ -28,6 +32,14 @@ public class Employee {
 
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
+	}
+
+	public Check getCheck() {
+		return check;
+	}
+
+	public void setCheck(Check check) {
+		this.check = check;
 	}
 
 }

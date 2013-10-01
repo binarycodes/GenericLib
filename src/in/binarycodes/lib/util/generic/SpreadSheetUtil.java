@@ -35,14 +35,11 @@ public final class SpreadSheetUtil {
 
 	public static <T> Workbook prepareWorkbook(final String sheetName,
 			List<T> beanList, Class<T> clazz, boolean humanize,
-			Map<Integer, String> columnHeaderMap) {
+			Map<Integer, String> columnHeaderMap, Map<Integer, String> allowMap) {
 		List<Map<String, String>> beanPropertyList = BeanUtil
 				.beanPropertiesList(clazz, beanList, humanize);
-		if (humanize) {
-			columnHeaderMap = beanPropertyNames(clazz, humanize,
-					columnHeaderMap);
-		}
-		return prepareWorkbook(sheetName, beanPropertyList, columnHeaderMap);
+		return prepareWorkbook(sheetName, beanPropertyList, columnHeaderMap,
+				allowMap);
 	}
 
 	public static <T> Workbook prepareWorkbook(final String sheetName,
@@ -55,12 +52,13 @@ public final class SpreadSheetUtil {
 		for (String headerName : propertyList) {
 			columnHeaderMap.put(cellStart++, headerName);
 		}
-		return prepareWorkbook(sheetName, beanPropertyList, columnHeaderMap);
+		return prepareWorkbook(sheetName, beanPropertyList, columnHeaderMap,
+				null);
 	}
 
 	public static Workbook prepareWorkbook(final String sheetName,
 			List<Map<String, String>> headerValueMapList,
-			Map<Integer, String> columnHeaderMap) {
+			Map<Integer, String> columnHeaderMap, Map<Integer, String> allowMap) {
 		Workbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet();
 		workbook.setSheetName(0, sheetName);
@@ -110,20 +108,46 @@ public final class SpreadSheetUtil {
 
 			for (Map.Entry<Integer, String> columnHeaders : columnHeaderMap
 					.entrySet()) {
-				Integer cellnum = columnHeaders.getKey();
-				cell = row.createCell(cellnum);
-				cell.setCellValue(headerValueMap.get(columnHeaders.getValue()));
-				cell.setCellStyle(dataCell);
+				if (allowMap != null) {
+					for (Map.Entry<Integer, String> allow : allowMap.entrySet()) {
+						if (allow.getKey().intValue() == columnHeaders.getKey()
+								.intValue()) {
+							Integer cellnum = columnHeaders.getKey();
+							cell = row.createCell(cellnum);
+							cell.setCellValue(headerValueMap.get(allow
+									.getValue()));
+							cell.setCellStyle(dataCell);
+						}
+					}
+				} else {
+					Integer cellnum = columnHeaders.getKey();
+					cell = row.createCell(cellnum);
+					cell.setCellValue(headerValueMap.get(columnHeaders
+							.getValue()));
+					cell.setCellStyle(dataCell);
+				}
 			}
 		}
 
 		row = sheet.createRow(0);
 		for (Map.Entry<Integer, String> columnHeaders : columnHeaderMap
 				.entrySet()) {
-			cell = row.createCell(columnHeaders.getKey());
-			cell.setCellValue(columnHeaders.getValue());
-			cell.setCellStyle(headerCell);
-			sheet.autoSizeColumn(columnHeaders.getKey());
+			if (allowMap != null) {
+				for (Map.Entry<Integer, String> allow : allowMap.entrySet()) {
+					if (allow.getKey().intValue() == columnHeaders.getKey()
+							.intValue()) {
+						cell = row.createCell(columnHeaders.getKey());
+						cell.setCellValue(columnHeaders.getValue());
+						cell.setCellStyle(headerCell);
+						sheet.autoSizeColumn(columnHeaders.getKey());
+					}
+				}
+			} else {
+				cell = row.createCell(columnHeaders.getKey());
+				cell.setCellValue(columnHeaders.getValue());
+				cell.setCellStyle(headerCell);
+				sheet.autoSizeColumn(columnHeaders.getKey());
+			}
 		}
 
 		return workbook;

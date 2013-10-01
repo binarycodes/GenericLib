@@ -27,8 +27,13 @@ public final class BeanUtil {
 		return propertiesMapList;
 	}
 
-	public static <T> Map<String, String> beanProperties(Class<T> clazz, T obj,
+	public static <T> Map<String, String> beanProperties(Class<?> clazz, T obj,
 			boolean humanize) {
+		return beanProperties(clazz, obj, humanize, null);
+	}
+
+	private static <T> Map<String, String> beanProperties(Class<?> clazz,
+			T obj, boolean humanize, String outerClassName) {
 		Map<String, String> propertiesMap = new HashMap<String, String>();
 		if (obj != null && clazz != null) {
 			try {
@@ -38,10 +43,24 @@ public final class BeanUtil {
 				for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
 					Method method = propertyDescriptor.getReadMethod();
 					String name = propertyDescriptor.getName();
+					String simpleClassName = obj.getClass().getSimpleName();
+					simpleClassName = simpleClassName.substring(0, 1)
+							.toLowerCase().concat(simpleClassName.substring(1));
+					if (StringUtil.hasData(outerClassName)) {
+						simpleClassName = outerClassName.concat(".").concat(
+								simpleClassName);
+					}
 					Object value = method.invoke(obj, new Object[] {});
 					propertiesMap.put(
-							humanize ? StringUtil.splitCamelCase(name) : name,
+							humanize ? StringUtil.splitCamelCase(name)
+									: simpleClassName.concat(".").concat(name),
 							value == null ? "" : value.toString());
+					if (propertyDescriptor.getPropertyType().getPackage()
+							.getImplementationVendor() == null) {
+						propertiesMap.putAll(beanProperties(
+								propertyDescriptor.getPropertyType(), value,
+								humanize, simpleClassName));
+					}
 				}
 			} catch (IntrospectionException e) {
 				e.printStackTrace();
@@ -55,5 +74,4 @@ public final class BeanUtil {
 		}
 		return propertiesMap;
 	}
-
 }
